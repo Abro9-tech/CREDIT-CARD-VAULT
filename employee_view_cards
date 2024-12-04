@@ -1,0 +1,61 @@
+<?php
+session_start();
+if (!isset($_SESSION['employee_name'])) {
+    header('Location: login.php');
+    exit();
+}
+
+@include 'config.php'; // Include your database connection
+
+// Fetch all credit cards (assuming there is a table for credit cards)
+$select = "SELECT * FROM credit_cards";
+$result = mysqli_query($conn, $select);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Credit Cards</title>
+    <style>
+        /* Simple inline CSS for the table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>View Credit Cards</h2>
+        <table>
+            <tr>
+                <th>Card ID</th>
+                <th>Card Number (Last 4 Digits)</th>
+            </tr>
+
+            <?php
+            while ($row = mysqli_fetch_array($result)) {
+                // Show only last 4 digits of the card number
+                $last_four_digits = substr($row['card_number'], -4);
+                echo "<tr>
+                        <td>" . $row['card_id'] . "</td>
+                        <td>" . $last_four_digits . "</td>
+                      </tr>";
+            }
+            ?>
+        </table>
+    </div>
+
+</body>
+</html>
